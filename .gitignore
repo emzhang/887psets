@@ -8,3 +8,9 @@ coqdoc.css
 Makefile.coq
 *.dir-locals.el
 .*.aux
+Lab1.v      
+Lab2.v      
+Lab3.v      
+_CoqProject 
+Lab1Sol.v   
+Lab2Sol.v   

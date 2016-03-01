@@ -2,14 +2,33 @@ Require Import Frap.
 
 Theorem another_important_theorem : length [1; 2; 3] = 1 + length [4; 5].
 Proof.
-Admitted.
+  simplify.
+  equality.
+Qed.
 
 Theorem length_concat : forall A (xs ys : list A), length (xs ++ ys) = length xs + length ys.
 Proof.
-Admitted.
+  induct xs.
+  induct ys.
+  simplify.
+  equality.
+
+  simplify.
+  equality.
+
+  simplify.
+  f_equal.
+  rewrite IHxs.
+  equality.
+Qed.
 
 Theorem length_rev : forall A (xs : list A), length xs = length (rev xs).
 Proof.
-Admitted.
-
-(* For full credit, the code you turn in can't use [Admitted] or [admit] anymore! *)
+  induct xs.
+  simplify.
+  equality.
+  simplify.
+  rewrite length_concat.
+  simplify.
+  linear_arithmetic.
+Qed.

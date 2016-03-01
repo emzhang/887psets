@@ -51,6 +51,8 @@ Definition interp_reduce (e : reduce) (ls : list nat) : nat :=
 (* It may be helpful to examine the definition of [fold_left]. *)
 Print fold_left.
 
+
+
 (* Now we have the overall MapReduce job executor. *)
 Definition interp_mr (e : mapReduce) ls :=
   interp_reduce (snd e) (map (interp_map (fst e)) ls).
@@ -66,6 +68,7 @@ Fixpoint allPositive (m : map_) : Prop :=
   | Add m1 m2 => allPositive m1 /\ allPositive m2
   | Compose m1 m2 => allPositive m1 /\ allPositive m2
   end.
+
 
 (* Finally, the module type listing the theorems that we ask you to prove. *)
 Module Type S.

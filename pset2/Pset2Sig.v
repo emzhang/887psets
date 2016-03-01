@@ -62,17 +62,18 @@ Definition parallel shared private1 private2
 
   bool flag[2] = {false, false};
   bool turn = false;
-  int global = 0;
-
+  int global = 0; 
+2
   oneThread(me, other) {
     int local;
 
-    flag[me] = true;
-    turn = other;
-    while (flag[other] && turn == other);
-    local = global;
-    global = local + 1;
-    flag[me] = false;
+    flag[me] = true; SetFlag turn = false
+    turn = other; SetTurn, turn = false
+    while (flag[other] && turn == other); ReadFlag, ReadTurn turn = false
+    local = global; Read turn = true?
+    global = local + 1; Write turn = true?
+    flag[me] = false; UnsetFlag turn = true
+    Done turn = false
   }
 
   The idea is that we run "oneThread(0, 1)" in parallel with "oneThread(1, 0)".
