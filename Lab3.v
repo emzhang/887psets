@@ -49,12 +49,12 @@ Record state := {
 Definition foo_init := { {| Pc := Loop; Vars := {| I := 0; J := 0 |} |} }.
 
 Inductive step : state -> state -> Prop :=
-| Step_Loop_done : forall i j,
+| Step_Loop_done : forall i j, i = 3 /\ j = 3 ->
     step {| Pc := Loop; Vars := {| I := i;
                                    J := j |} |}
          {| Pc := Done; Vars := {| I := i;
                                    J := j |} |}
-| Step_Loop_enter : forall i j,
+| Step_Loop_enter : forall i j, i < 3 /\ j < 3 ->
     step {| Pc := Loop; Vars := {| I := i;
                                    J := j |} |}
          {| Pc := i_add_1; Vars := {| I := i;
@@ -89,8 +89,8 @@ Arguments foo_correct / .
 Theorem foo_ok :
   invariantFor foo_sys foo_correct.
 Proof.
-Admitted.
-
+  model_check.
+Qed.
 
 (* Next, we'll look at verifying the following two-thread producer/consumer
  * program against the property that MIN <= x <= MAX always holds.

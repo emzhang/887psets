@@ -69,6 +69,17 @@ Print In.
 Theorem lsearch_ok : forall needle haystack,
   invariantFor (lsearch_sys needle haystack) (lsearch_correct needle haystack).
 Proof.
+  simplify.
+  apply invariant_induction; simplify.
+  invert H.
+  simplify.
+  equality.
+
+  apply lsearch_correct.
+
+  
+
+  
 Admitted.
 
 (* Hint: You will almost certainly want to define and use a stronger

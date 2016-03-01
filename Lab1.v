@@ -1,5 +1,5 @@
 (** * 6.887 Formal Reasoning About Programs - Lab 1
-    * Relational Algebra: Semantics and Optimization *)
+    * Relational Algebra: Semantics a *)
 
 Require Import Frap.
 
@@ -116,12 +116,33 @@ Print filter.
  * One last suggestion: the tactic form [rewrite <- H] may be helpful, for using
  * an equality in the right-to-left direction for rewriting. *)
 
+Definition ninterp (ne: nexp) (rw: row) : nat :=
+  match ne with
+    | Const n => n
+    | Field fn => lookup rw fn
+  end.
+
+Fixpoint binterp (be: bexp) (rw : row) : bool :=
+  match be with
+    | Truth => true
+    | Equal ne1 ne2 => if ninterp ne1 rw ==n ninterp ne2 rw then true else false
+    | And be1 be2 => binterp be1 rw && binterp be2 rw
+  end.
+
+Fixpoint rinterp (re : rexp) (rs : relations) : relation :=
+  match re with
+    | Var rx => rlookup rs rx
+    | Project re pr => map (fun r => map (fun fn => (fn, lookup r fn)) pr) (rinterp re rs)
+    | Filter re be => filter (binterp be) (rinterp re rs)
+    | Join re1 re2 => join (rinterp re1 rs) (rinterp re2 rs)
+  end.
 
 (* CHALLENGE #2: implement and prove correct a simple optimization, based on
  * this law of relational algebra: *)
 Definition claimedLaw := forall re be1 be2, (re where be1 where be2) = (re where be1 && be2).
 (* There are many more laws where that one came from, and SQL database engines
  * implement them in efficient ways! *)
+
 
 
 (* CHALLENGE #3: implement and prove correct a kind of type-checker for [rexp]s,

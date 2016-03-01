@@ -181,7 +181,7 @@ Definition ruleAccurate state (predicates : fmap var (state -> Prop))
 Definition predicate_abstraction_sound state action
            (doAction : action -> state -> state -> Prop)
            (pa : predicate_abstraction state action) :=
-  forall act rs r, pa.(Rules) $? act = Some rs
+  forall act rs r, pa.(Rules) $? act = Some rs          forall a:Type, Option a := { Some a | None } 
                    -> In r rs
                    -> ruleAccurate pa.(Predicates) (doAction act) r.
 
@@ -241,6 +241,7 @@ Module Program1.
 
   Inductive action := AssignA | TestTrue | TestFalse | AddToA | SubtractFromN.
 
+  (*what kind of edges are in graph*)
   Inductive actionOf : pc -> action -> pc -> Prop :=
   | ActInitialize : actionOf Initialize AssignA Loop
   | ActLoopTrue : actionOf Loop TestTrue IncrementA
@@ -248,6 +249,7 @@ Module Program1.
   | ActIncrementA : actionOf IncrementA AddToA DecrementN
   | ActDecrementN : actionOf DecrementN SubtractFromN Loop.
 
+  (*described new state after taking an edge, given previous state*)
   Inductive doAction : action -> state -> state -> Prop :=
   | DoAssignA : forall n a, doAction AssignA {| N := n; A := a |} {| N := n; A := 1 |}
   | DoTestTrue : forall n a, n > 0 -> doAction TestTrue {| N := n; A := a |} {| N := n; A := a |}
