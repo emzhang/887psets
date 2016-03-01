@@ -49,11 +49,13 @@ Proof.
   propositional.
   exists (pc0, $0).
   propositional.
-  exists (paR.(Initial)).
-  destruct st1.
-
-    
-    simplify.
+  invert H1; simplify.
+  eapply PaR.
+  simplify.
+  cases pa.
+  simplify.
+  
+  simplify.
   exists (Initial (predicate_abstract pc0 actionOf pa)).
                     
   induct paR.
@@ -87,6 +89,6 @@ Opaque Zplus. (* Important to keep Coq from trying too hard to help and
                * unfolding the definition of addition for integers! *)
 
 Theorem sys_ok : forall np npo,
-  invariantFor (sys np npo) (fun st => fst st = Unlock2 -> (snd st).(HasLock) = true).
+  invariantFor (sys np npo) (fun st => fst st = Done -> (snd st).(HasLock) = false).
 Proof.
 Admitted.
