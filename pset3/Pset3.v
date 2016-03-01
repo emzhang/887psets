@@ -24,11 +24,11 @@ Proof.
   invert H1; simplify.
   eapply PaR.
   simplify.
-  cases pa.
-  simplify.
-  cases x.
-  simplify.
   invert H0.
+
+  
+  
+  
 Admitted.
 
 
