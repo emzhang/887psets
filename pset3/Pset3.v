@@ -3,34 +3,6 @@
 Require Import Frap Pset3Sig.
 
 Set Implicit Arguments.
-(*
-Lemma first_thing : forall pc state action
-  (*(st1 st2 : state)*)
-  (actionOf : pc -> action -> pc -> Prop)
-  (doAction : action -> state -> state -> Prop)
-  (pa : predicate_abstraction state action)
-  (sys1 : trsys (pc * state))
-  (sys2 : trsys (pc * fmap var bool))
-  (R : pc * state -> pc * fmap var bool -> Prop),
-  (forall st1, sys1.(Initial) st1
-               -> exists st2, R st1 st2
-                              /\ sys2.(Initial) st2).
-Proof.
-  simplify.
-  first_order.
-  simplify.
-Admitted.
-
-Lemma second_thing : forall pc state action
-  (sys1 : trsys (pc * state))
-  (sys2 : trsys (pc * fmap var bool))
-  (R : pc * state -> pc * fmap var bool -> Prop) ,
-  (forall st1 st2, R st1 st2
-                      -> forall st1', sys1.(Step) st1 st1'
-                                      -> exists st2', R st1' st2'
-                                                      /\ sys2.(Step) st2 st2').
-Proof.
-*)
    
 Theorem predicate_abstraction_simulates : forall pc state action
   (pc0 : pc) (st0 : state)
@@ -54,16 +26,9 @@ Proof.
   simplify.
   cases pa.
   simplify.
-  
+  cases x.
   simplify.
-  exists (Initial (predicate_abstract pc0 actionOf pa)).
-                    
-  induct paR.
-  simplify.
-  propositional.
-  invert H1.
-  
-  exact (Simulates (first_thing _ _ _ _ _ _ _ _) (second_thing _ _ _ _ _ _ __ _ _ _)).
+  invert H0.
 Admitted.
 
 
