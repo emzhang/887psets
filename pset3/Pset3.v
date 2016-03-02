@@ -3,6 +3,7 @@
 Require Import Frap Pset3Sig.
 
 Set Implicit Arguments.
+
    
 Theorem predicate_abstraction_simulates : forall pc state action
   (pc0 : pc) (st0 : state)
@@ -38,40 +39,60 @@ Proof.
   propositional.
   eapply PaR.
   simplify.
-  cases (Predicates pa $? x).
+  unfold predicate_abstraction_sound in H.
+  unfold ruleAccurate in H.
+  unfold assertionAccurate in H.
   cases (Rules pa $? act).
-
-  (* ??? am stuck :( :( *)
+  cases (Predicates pa $? x).
   
-  assert (applyRules f $0 l $? x = Some b -> exists r : rule,  match r with
-  | {| Assumptions := asns; Conclusion := conc |} => (conc.(AssumedPredicate), conc.(AssumedToBe))
-    
-                                                               end = (x, b)).
-  unfold applyRules in H1.
-  unfold applyRule in H1.
-  intros.
-  simplify.
-  simpl in H1.
-  cases ( (fix applyRules (st st' : fmap var bool) (rs : list rule) {struct rs} :
-          fmap var bool :=
-          match rs with
-          | [] => st'
-          | r :: rs' =>
-              applyRules st
-                match r with
-                | {| Assumptions := asns; Conclusion := conc |} =>
-                    if assumptionsHold st asns
-                    then st' $+ (AssumedPredicate conc, AssumedToBe conc)
-                    else st'
-                end rs'
-          end) f $0 l $? x).
-          if assumptionsHold st asns
-    then st' $+ (conc.(AssumedPredicate), conc.(AssumedToBe))
-    else st'
-          
-  invert H0; simplify.
-  eapply PaR.
-  simplify.
+  
+  (* prove this as lemma *)
+  assert (applyRules f $0 l $? x = Some b -> exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l).
+  admit.
+  
+  specialize (H4 H1).
+  invert H4.
+  specialize (H act l x0).
+  specialize (H Heq).
+  destruct H5.
+  specialize (H H5).
+  specialize (H st3 st4).
+  assert (assumptionsAccurate (Predicates pa) (Assumptions x0) st3).
+  admit.
+  specialize (H H6).
+  specialize (H H3).
+  invert H4.
+  rewrite Heq0 in H.
+  apply H.
+  SearchAbout $0.
+  assert (applyRules f $0 l $? x = Some b -> exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l).
+  admit.
+  specialize (H4 H1).
+  invert H4.
+  specialize (H act l x0).
+  specialize (H Heq).
+  destruct H5.
+  specialize (H H5).
+  specialize (H st3 st4).
+  assert (assumptionsAccurate (Predicates pa) (Assumptions x0) st3).
+  admit.
+  specialize (H H6).
+  specialize (H H3).
+  invert H4.
+  rewrite Heq0 in H.
+  apply H.
+
+
+  rewrite (lookup_empty (A:=var) bool x) in H1.
+  assert (forall (b : bool), None = Some b -> False).
+  intros. equality.
+  specialize (H4 b).
+  contradiction H4.
+
+  econstructor.
+  invert H0.
+  apply H2.
+  
  
   
 Admitted.
