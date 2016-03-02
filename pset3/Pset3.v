@@ -4,7 +4,13 @@ Require Import Frap Pset3Sig.
 
 Set Implicit Arguments.
 
-   
+(*
+Lemma l1 : forallapplyRules f $0 l $? x = Some b -> exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l.
+
+Proof.
+Qed.
+*)
+
 Theorem predicate_abstraction_simulates : forall pc state action
   (pc0 : pc) (st0 : state)
   (actionOf : pc -> action -> pc -> Prop)
@@ -47,6 +53,7 @@ Proof.
   
   
   (* prove this as lemma *)
+  
   assert (applyRules f $0 l $? x = Some b -> exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l).
   admit.
   
@@ -64,7 +71,9 @@ Proof.
   invert H4.
   rewrite Heq0 in H.
   apply H.
+  
   SearchAbout $0.
+  
   assert (applyRules f $0 l $? x = Some b -> exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l).
   admit.
   specialize (H4 H1).
@@ -92,10 +101,7 @@ Proof.
   econstructor.
   invert H0.
   apply H2.
-  
- 
-  
-Admitted.
+Qed.
 
 
 (* Optional part: using predicate abstraction for another example *)
