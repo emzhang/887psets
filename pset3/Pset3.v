@@ -26,8 +26,53 @@ Proof.
   simplify.
   invert H0.
 
+  simplify.
+  invert H1.
+  propositional.
+  Check $0.
+  destruct st2.
+  exists (pc2, match (Rules pa) $? act with
+            | None => $0
+            | Some rs => applyRules f $0 rs
+                end).
+  propositional.
+  eapply PaR.
+  simplify.
+  cases (Predicates pa $? x).
+  cases (Rules pa $? act).
+
+  (* ??? am stuck :( :( *)
   
-  
+  assert (applyRules f $0 l $? x = Some b -> exists r : rule,  match r with
+  | {| Assumptions := asns; Conclusion := conc |} => (conc.(AssumedPredicate), conc.(AssumedToBe))
+    
+                                                               end = (x, b)).
+  unfold applyRules in H1.
+  unfold applyRule in H1.
+  intros.
+  simplify.
+  simpl in H1.
+  cases ( (fix applyRules (st st' : fmap var bool) (rs : list rule) {struct rs} :
+          fmap var bool :=
+          match rs with
+          | [] => st'
+          | r :: rs' =>
+              applyRules st
+                match r with
+                | {| Assumptions := asns; Conclusion := conc |} =>
+                    if assumptionsHold st asns
+                    then st' $+ (AssumedPredicate conc, AssumedToBe conc)
+                    else st'
+                end rs'
+          end) f $0 l $? x).
+          if assumptionsHold st asns
+    then st' $+ (conc.(AssumedPredicate), conc.(AssumedToBe))
+    else st'
+          
+  invert H0; simplify.
+  eapply PaR.
+  simplify.
+ 
   
 Admitted.
 
