@@ -104,6 +104,7 @@ Theorem predicate_abstraction_simulates : forall pc state action
                (actionSys pc0 st0 actionOf doAction)
                (predicate_abstract pc0 actionOf pa).
 Proof.
+  (*proof of first thing in simulates*)
   simplify.
   econstructor.
   intros.
@@ -116,7 +117,7 @@ Proof.
   simplify.
   invert H0.
 
-  (*begin proof of second thing*)
+  (*begin proof of second thing in simulates*)
   simplify.
   invert H1.
   destruct st2.
@@ -166,24 +167,44 @@ Proof.
   (*prove as lemma1*)
   assert (exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l /\ assumptionsHold f (Assumptions r) = true) .
   eapply (l1 l f (pm':=$0)).
-  apply H1.
+  exact H1.
   rewrite (lookup_empty (A:=var) bool x).
   equality.
- 
-  destruct H4.
-  specialize (H act l x0).
-  specialize (H Heq).
-  destruct H4.
-  destruct H5.
-  specialize (H H5).
-  specialize (H st3 st4).
+
   
-  specialize (H4 H1).
-  invert H4.
+  assert False.
+  admit.
+  apply H5.
+
+  cases (Rules pa $? act).
+  cases (Predicates pa $? x).
+
+  assert (exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l /\ assumptionsHold f (Assumptions r) = true) .
+  eapply (l1 l f (pm':=$0)).
+
+  assert (applyRules f $0 l $? x = Some b).
+  admit.
+
+  apply H4.
+
+  rewrite (lookup_empty (A:=var) bool x).
+  equality.
+
+  assert False. admit.
+  destruct H4.
+  destruct H4.
+  destruct H6.
   specialize (H act l x0).
-  specialize (H Heq).
+  specialize (H Heq0).
+  specialize (H H6).
+  specialize (H st3 st4).
+
+  assert (assumptionsAccurate (Predicates pa) (Assumptions x0) st3). admit.
+  invert H4.
+  specialize (H H8).
+  specialize (H H3).
   destruct H5.
-  specialize (H H5).
+  specialize (H H).
   specialize (H st3 st4).
   (*prove as lemma2*)
   assert (assumptionsAccurate (Predicates pa) (Assumptions x0) st3).

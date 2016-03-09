@@ -4,7 +4,7 @@ Require Import Frap Pset3Sig.
 
 Set Implicit Arguments.
 
-(*Lemma forall pm pm', applyRules pm pm' l,*)
+(*note: In trying to incorporate lemma l1 into predicate abstration simulates, I get an error and compiling issues that I can't figure out. I know that the second lemma I use in predicate_abstraction_simulates will also come from l1, I just need to connect assumptions and assertions. I also need to use lemma l1 in my proof, but haven't fully integrated that in. I have it partially included in in ps3_v3.1.v*)
 
 Lemma l1: forall  (l : list rule) (x : var) (b : bool), forall (pm pm': fmap var bool), applyRules pm pm' l $? x = Some b -> pm' $? x = None -> exists r: rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l /\ assumptionsHold pm (Assumptions r) = true.
 Proof.
@@ -93,7 +93,7 @@ Proof.
   propositional.
 
 Qed.
-     
+
 Theorem predicate_abstraction_simulates : forall pc state action
   (pc0 : pc) (st0 : state)
   (actionOf : pc -> action -> pc -> Prop)
@@ -116,9 +116,10 @@ Proof.
   simplify.
   invert H0.
 
-  (*begin proof of second thing*)
   simplify.
   invert H1.
+  propositional.
+  Check $0.
   destruct st2.
   exists (pc2, match (Rules pa) $? act with
             | None => $0
@@ -128,55 +129,19 @@ Proof.
   eapply PaR.
   simplify.
   unfold predicate_abstraction_sound in H.
-  
+  unfold ruleAccurate in H.
+  unfold assertionAccurate in H.
   cases (Rules pa $? act).
   cases (Predicates pa $? x).
   
   
-  assert (exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l /\ assumptionsHold f (Assumptions r) = true) .
-  eapply (l1 l f (pm':=$0)).
- 
+  (* prove this as lemma1 *)
 
-  apply H1.
- 
-  rewrite (lookup_empty (A:=var) bool x).
-  equality.
- 
-  destruct H4.
-  specialize (H act l x0).
-  specialize (H Heq).
-  destruct H4.
-  destruct H5.
-  specialize (H H5).
-  specialize (H st3 st4).
-  (*prove this as lemma 2*)
- 
-  assert (assumptionsAccurate (Predicates pa) (Assumptions x0) st3). admit. 
-  invert H4.
-  unfold assumptionsAccurate in H.
-  unfold assertionAccurate in H.
   
-  specialize (H H7).
-  specialize (H H3).
-  invert H1.
-  rewrite Heq0 in H.
-  apply H.
+  assert (applyRules f $0 l $? x = Some b -> exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l).
+  simplify.
   
-  SearchAbout $0.
-  (*prove as lemma1*)
-  assert (exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l /\ assumptionsHold f (Assumptions r) = true) .
-  eapply (l1 l f (pm':=$0)).
-  apply H1.
-  rewrite (lookup_empty (A:=var) bool x).
-  equality.
- 
-  destruct H4.
-  specialize (H act l x0).
-  specialize (H Heq).
-  destruct H4.
-  destruct H5.
-  specialize (H H5).
-  specialize (H st3 st4).
+  admit.
   
   specialize (H4 H1).
   invert H4.
@@ -185,20 +150,46 @@ Proof.
   destruct H5.
   specialize (H H5).
   specialize (H st3 st4).
-  (*prove as lemma2*)
+  (*prove this as lemma 2*)
   assert (assumptionsAccurate (Predicates pa) (Assumptions x0) st3).
   admit.
   specialize (H H6).
   specialize (H H3).
   invert H4.
-  apply H1.
+  rewrite Heq0 in H.
+  apply H.
+  
+  SearchAbout $0.
+  (*prove as lemma1*)
+  assert (applyRules f $0 l $? x = Some b -> exists r : rule, ((r.(Conclusion).(AssumedPredicate)), (r.(Conclusion).(AssumedToBe))) = (x, b) /\ In r l).
+  
+  admit.
+  specialize (H4 H1).
+  invert H4.
+  specialize (H act l x0).
+  specialize (H Heq).
+  destruct H5.
+  specialize (H H5).
+  specialize (H st3 st4).
 
-  (*rewrite (lookup_empty (A:=var) bool x) in H1.*)
+  (*being proving false*)
+  (*prove as lemma2*)
+  assert (assumptionsAccurate (Predicates pa) (Assumptions x0) st3). 
+  admit.
+  
+  specialize (H H6).
+  specialize (H H3).
+  invert H4.
+  rewrite Heq0 in H.
+  apply H.
+
+
+  rewrite (lookup_empty (A:=var) bool x) in H1.
   assert (forall (b : bool), None = Some b -> False).
   intros. equality.
   specialize (H4 b).
   contradiction H4.
-  destruct H4.
+  (* end proving false *)
 
   econstructor.
   invert H0.
