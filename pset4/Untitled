@@ -1,0 +1,61 @@
+13 subgoals, subgoal 1 (ID 13257)
+  
+  env : environment
+  v : valuation
+  c1 : cmd
+  v1 : valuation
+  c2 : cmd
+  exn : nat
+  v' : valuation
+  H : eval env v c1 (Normal, v1)
+  H0 : eval env v1 c2 (Exception exn, v')
+  IHeval1 : (Normal, v1) = (Exception exn, v1) ->
+            (step env) ^* (v, c1) (v1, Throw (Const exn))
+  IHeval2 : (step env) ^* (v1, c2) (v', Throw (Const exn))
+  ============================
+   (step env) ^* (v, Sequence c1 c2) (v', Throw (Const exn))
+
+subgoal 2 (ID 1189) is:
+ (step env) ^* (v, Sequence c1 c2) (v', Throw (Const exn))
+subgoal 3 (ID 1201) is:
+ match outcome with
+ | Normal => (step env) ^* (v, If e then_ else_) (v', Skip)
+ | Exception n => (step env) ^* (v, If e then_ else_) (v', Throw (Const n))
+ end
+subgoal 4 (ID 1213) is:
+ match outcome with
+ | Normal => (step env) ^* (v, If e then_ else_) (v', Skip)
+ | Exception n => (step env) ^* (v, If e then_ else_) (v', Throw (Const n))
+ end
+subgoal 5 (ID 1227) is:
+ match outcome with
+ | Normal => (step env) ^* (v, While e body) (v', Skip)
+ | Exception n => (step env) ^* (v, While e body) (v', Throw (Const n))
+ end
+subgoal 6 (ID 1238) is:
+ (step env) ^* (v, While e body) (v', Throw (Const exn))
+subgoal 7 (ID 1257) is:
+ (step env) ^* (v, Call lhs f arg)
+   (v $+ (lhs, match v'0 $? Ret spec with
+               | Some n => n
+               | None => 0
+               end), Skip)
+subgoal 8 (ID 1270) is:
+ (step env) ^* (v', Call lhs f arg) (v', Throw (Const exn))
+subgoal 9 (ID 1280) is:
+ (step env) ^* (v, Try c x handler) (v', Skip)
+subgoal 10 (ID 1295) is:
+ match outcome with
+ | Normal => (step env) ^* (v, Try c x handler) (v', Skip)
+ | Exception n => (step env) ^* (v, Try c x handler) (v', Throw (Const n))
+ end
+subgoal 11 (ID 1300) is:
+ (step env) ^* (v', Throw e) (v', Throw (Const (interp e v')))
+subgoal 12 (ID 1311) is:
+ (step env) ^* (v, InCall v0 lhs ret c)
+   (v0 $+ (lhs, match v'0 $? ret with
+                | Some n => n
+                | None => 0
+                end), Skip)
+subgoal 13 (ID 1323) is:
+ (step env) ^* (v, InCall v' lhs ret c) (v', Throw (Const exn))
